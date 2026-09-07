@@ -1,0 +1,19 @@
+rules_version = '2';
+
+// Paste this into Firebase Console -> Firestore Database -> Rules.
+//
+// Anyone signed in (including anonymous sign-in, which is what the app uses)
+// can read/write a household's data as long as they know its 6-character
+// household code, since the code is the document id. The code itself -
+// shared only between the two phones - is the access control.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /households/{householdId} {
+      allow read, write: if request.auth != null;
+
+      match /{subcollection}/{docId} {
+        allow read, write: if request.auth != null;
+      }
+    }
+  }
+}
